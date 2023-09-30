@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 
 public class SendEvents implements KeyListener, MouseMotionListener, MouseWheelListener, MouseListener {
@@ -108,40 +109,25 @@ public class SendEvents implements KeyListener, MouseMotionListener, MouseWheelL
     }
 
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_C && e.isControlDown()) {
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            Transferable contents = clipboard.getContents(null);
-            String data = "";
+        writer.println(Commands.PRESS_KEY.getAbbrev());
+        writer.println(e.getKeyCode());
+
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        Transferable contents = clipboard.getContents(null);
+        boolean hasTransferableText = (contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor);
+        if (hasTransferableText) {
             try {
-                data = (String) contents.getTransferData(DataFlavor.stringFlavor);
+                String result = (String) contents.getTransferData(DataFlavor.stringFlavor);
+                writer.println(Commands.PASTE_TEXT.getAbbrev());
+                writer.println(result);
             } catch (UnsupportedFlavorException ex) {
                 ex.printStackTrace();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-
-            writer.println(Commands.PASTE_TEXT.getAbbrev());
-            writer.println(data);
-            writer.flush();
-        } else if (e.getKeyCode() == KeyEvent.VK_V && e.isControlDown()) {
-            writer.println(Commands.PRESS_KEY.getAbbrev());
-            writer.println(KeyEvent.VK_CONTROL);
-            writer.flush();
-            writer.println(Commands.PRESS_KEY.getAbbrev());
-            writer.println(KeyEvent.VK_V);
-            writer.flush();
-            writer.println(Commands.RELEASE_KEY.getAbbrev());
-            writer.println(KeyEvent.VK_V);
-            writer.flush();
-            writer.println(Commands.RELEASE_KEY.getAbbrev());
-            writer.println(KeyEvent.VK_CONTROL);
-            writer.flush();
-        } else {
-            writer.println(Commands.PRESS_KEY.getAbbrev());
-            writer.println(e.getKeyCode());
-            writer.flush();
         }
 
+        writer.flush();
     }
 
     public void keyReleased(KeyEvent e) {

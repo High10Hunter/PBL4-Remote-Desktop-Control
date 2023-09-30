@@ -1,8 +1,13 @@
 package server;
 
+import java.awt.HeadlessException;
 import java.awt.Robot;
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.Socket;
@@ -49,13 +54,24 @@ public class ReceiveEvents extends Thread {
                         robot.mouseMove(scanner.nextInt(), scanner.nextInt());
                         break;
                     case -9:
-                        String data = scanner.nextLine();
-                        StringSelection stringSelection = new StringSelection(data);
-                        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
-                        robot.keyPress(KeyEvent.VK_CONTROL);
-                        robot.keyPress(KeyEvent.VK_V);
-                        robot.keyRelease(KeyEvent.VK_V);
-                        robot.keyRelease(KeyEvent.VK_CONTROL);
+                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                        Transferable transferable = clipboard.getContents(null);
+                        if (transferable != null && transferable.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                            try {
+                                String content = (String) transferable.getTransferData(DataFlavor.stringFlavor);
+
+                                // Simulate the "Paste" command
+                                StringSelection stringSelection = new StringSelection(content);
+                                clipboard.setContents(stringSelection, stringSelection);
+                                robot.keyPress(KeyEvent.VK_CONTROL);
+                                robot.keyPress(KeyEvent.VK_V);
+                                robot.keyRelease(KeyEvent.VK_V);
+                                robot.keyRelease(KeyEvent.VK_CONTROL);
+                            } catch (UnsupportedFlavorException | IOException | HeadlessException
+                                    | IllegalArgumentException ex) {
+                                ex.printStackTrace();
+                            }
+                        }
                         break;
                     default:
                         break;
