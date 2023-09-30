@@ -58,7 +58,7 @@ public class ReceiveEvents extends Thread {
                         break;
                     case -10:
                         // Get the text to copy from the message
-                        String textToCopy = scanner.nextLine().trim();
+                        String textToCopy = scanner.nextLine();
                         System.out.println("Copying text: " + textToCopy);
                         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 

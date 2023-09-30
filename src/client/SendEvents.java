@@ -117,6 +117,10 @@ public class SendEvents implements KeyListener, MouseMotionListener, MouseWheelL
             if (transferable != null && transferable.isDataFlavorSupported(DataFlavor.stringFlavor)) {
                 try {
                     String content = (String) transferable.getTransferData(DataFlavor.stringFlavor);
+                    System.out.println("Pasting text: " + content);
+                    StringSelection stringSelection = new StringSelection(content);
+                    clipboard.setContents(stringSelection, stringSelection);
+
                     // Send the content of the clipboard to the server
                     writer.println(Commands.PASTE_TEXT.getAbbrev());
                     writer.println(content);
