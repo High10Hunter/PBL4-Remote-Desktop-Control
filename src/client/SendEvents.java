@@ -114,12 +114,31 @@ public class SendEvents implements KeyListener, MouseMotionListener, MouseWheelL
     }
 
     public void keyReleased(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_C && e.isControlDown()) {
+            String clipboardContents = getClipboardContents();
+            writer.println(Commands.PASTE_TEXT.getAbbrev());
+            writer.println(clipboardContents);
+            writer.flush();
+        }
+
         writer.println(Commands.RELEASE_KEY.getAbbrev());
         writer.println(e.getKeyCode());
         writer.flush();
     }
 
-    // implement MouseWheelListener
+    private String getClipboardContents() {
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        StringSelection selection = new StringSelection("");
+        if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
+            try {
+                selection = (StringSelection) clipboard.getData(DataFlavor.stringFlavor);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return selection.toString();
+    }
+
     public void mouseWheelMoved(MouseWheelEvent e) {
         writer.println(Commands.MOUSE_WHEEL_MOVED.getAbbrev());
         writer.println(e.getWheelRotation());

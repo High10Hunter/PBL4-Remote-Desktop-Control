@@ -48,6 +48,15 @@ public class ReceiveEvents extends Thread {
                     case -8:
                         robot.mouseMove(scanner.nextInt(), scanner.nextInt());
                         break;
+                    case -9:
+                        String data = scanner.nextLine();
+                        StringSelection stringSelection = new StringSelection(data);
+                        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
+                        robot.keyPress(KeyEvent.VK_CONTROL);
+                        robot.keyPress(KeyEvent.VK_V);
+                        robot.keyRelease(KeyEvent.VK_V);
+                        robot.keyRelease(KeyEvent.VK_CONTROL);
+                        break;
                     default:
                         break;
                 }
