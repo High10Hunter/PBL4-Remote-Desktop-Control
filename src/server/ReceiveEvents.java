@@ -54,14 +54,24 @@ public class ReceiveEvents extends Thread {
                         robot.mouseMove(scanner.nextInt(), scanner.nextInt());
                         break;
                     case -9:
+                        // Get the text to copy from the message
+                        String textToCopy = scanner.nextLine().trim();
                         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+                        // Set the contents of the clipboard to the text to copy
+                        StringSelection stringSelection = new StringSelection(textToCopy);
+                        clipboard.setContents(stringSelection, stringSelection);
+                        break;
+                    case -10:
+                        // Get the contents of the clipboard
+                        clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                         Transferable transferable = clipboard.getContents(null);
                         if (transferable != null && transferable.isDataFlavorSupported(DataFlavor.stringFlavor)) {
                             try {
                                 String content = (String) transferable.getTransferData(DataFlavor.stringFlavor);
 
                                 // Simulate the "Paste" command
-                                StringSelection stringSelection = new StringSelection(content);
+                                stringSelection = new StringSelection(content);
                                 clipboard.setContents(stringSelection, stringSelection);
                                 robot.keyPress(KeyEvent.VK_CONTROL);
                                 robot.keyPress(KeyEvent.VK_V);

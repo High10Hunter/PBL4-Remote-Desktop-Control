@@ -109,25 +109,30 @@ public class SendEvents implements KeyListener, MouseMotionListener, MouseWheelL
     }
 
     public void keyPressed(KeyEvent e) {
-        writer.println(Commands.PRESS_KEY.getAbbrev());
-        writer.println(e.getKeyCode());
+        // check if the key pressed is ctrl + c
+        if (e.getKeyCode() == KeyEvent.VK_C && e.isControlDown()) {
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            Transferable transferable = clipboard.getContents(null);
+            if (transferable != null && transferable.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                try {
+                    String content = (String) transferable.getTransferData(DataFlavor.stringFlavor);
 
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        Transferable contents = clipboard.getContents(null);
-        boolean hasTransferableText = (contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor);
-        if (hasTransferableText) {
-            try {
-                String result = (String) contents.getTransferData(DataFlavor.stringFlavor);
-                writer.println(Commands.PASTE_TEXT.getAbbrev());
-                writer.println(result);
-            } catch (UnsupportedFlavorException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
+                    // Send the content of the clipboard to the server
+                    writer.println(Commands.COPY_TEXT.getAbbrev());
+                    writer.println(content);
+                    writer.flush();
+                } catch (UnsupportedFlavorException | IOException ex) {
+                    ex.printStackTrace();
+                }
             }
+        } else if (e.getKeyCode() == KeyEvent.VK_V && e.isControlDown()) {
+            writer.println(Commands.PASTE_TEXT.getAbbrev());
+            writer.flush();
+        } else {
+            writer.println(Commands.PRESS_KEY.getAbbrev());
+            writer.println(e.getKeyCode());
+            writer.flush();
         }
-
-        writer.flush();
     }
 
     public void keyReleased(KeyEvent e) {
