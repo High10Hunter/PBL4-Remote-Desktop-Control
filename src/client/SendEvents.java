@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import javax.sound.sampled.Clip;
 import javax.swing.*;
 
 public class SendEvents implements KeyListener, MouseMotionListener, MouseWheelListener, MouseListener {
@@ -111,23 +110,21 @@ public class SendEvents implements KeyListener, MouseMotionListener, MouseWheelL
     public void keyPressed(KeyEvent e) {
         // check if the key pressed is ctrl + c
         if (e.getKeyCode() == KeyEvent.VK_C && e.isControlDown()) {
+            System.out.println("Copying text from remote computer");
+        } else if (e.getKeyCode() == KeyEvent.VK_V && e.isControlDown()) {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             Transferable transferable = clipboard.getContents(null);
             if (transferable != null && transferable.isDataFlavorSupported(DataFlavor.stringFlavor)) {
                 try {
                     String content = (String) transferable.getTransferData(DataFlavor.stringFlavor);
-
                     // Send the content of the clipboard to the server
-                    writer.println(Commands.COPY_TEXT.getAbbrev());
+                    writer.println(Commands.PASTE_TEXT.getAbbrev());
                     writer.println(content);
                     writer.flush();
                 } catch (UnsupportedFlavorException | IOException ex) {
                     ex.printStackTrace();
                 }
             }
-        } else if (e.getKeyCode() == KeyEvent.VK_V && e.isControlDown()) {
-            writer.println(Commands.PASTE_TEXT.getAbbrev());
-            writer.flush();
         } else {
             writer.println(Commands.PRESS_KEY.getAbbrev());
             writer.println(e.getKeyCode());
