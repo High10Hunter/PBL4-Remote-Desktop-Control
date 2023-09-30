@@ -1,6 +1,9 @@
 package server;
 
 import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
@@ -38,6 +41,16 @@ public class ReceiveEvents extends Thread {
                         break;
                     case -5:
                         robot.mouseMove(scanner.nextInt(), scanner.nextInt());
+                        break;
+                    case -7:
+                        String text = scanner.nextLine();
+                        System.out.println("Text to be pasted: " + text);
+                        StringSelection stringSelection = new StringSelection(text);
+                        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
+                        robot.keyPress(KeyEvent.VK_CONTROL);
+                        robot.keyPress(KeyEvent.VK_V);
+                        robot.keyRelease(KeyEvent.VK_V);
+                        robot.keyRelease(KeyEvent.VK_CONTROL);
                         break;
                     default:
                         break;

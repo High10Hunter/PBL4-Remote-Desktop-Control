@@ -1,5 +1,11 @@
 package client;
 
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -69,6 +75,24 @@ public class SendEvents implements KeyListener, MouseMotionListener, MouseListen
 
         writer.println(xButton);
         writer.flush();
+
+        // Check for clipboard contents
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        Transferable contents = clipboard.getContents(null);
+        if (contents != null && contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+            String selectedText = "";
+            try {
+                selectedText = (String) contents.getTransferData(DataFlavor.stringFlavor);
+                clipboard.setContents(new StringSelection(""), null); // Clear clipboard
+                writer.println(Commands.PASTE.getAbbrev());
+                writer.println(selectedText);
+                writer.flush();
+            } catch (UnsupportedFlavorException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public void mouseReleased(MouseEvent e) {
@@ -96,6 +120,23 @@ public class SendEvents implements KeyListener, MouseMotionListener, MouseListen
         writer.println(Commands.PRESS_KEY.getAbbrev());
         writer.println(e.getKeyCode());
         writer.flush();
+
+        // Check for clipboard contents
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        Transferable contents = clipboard.getContents(null);
+        if (contents != null && contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+            try {
+                String selectedText = (String) contents.getTransferData(DataFlavor.stringFlavor);
+                clipboard.setContents(new StringSelection(""), null); // Clear clipboard
+                writer.println(Commands.PASTE.getAbbrev());
+                writer.println(selectedText);
+                writer.flush();
+            } catch (UnsupportedFlavorException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public void keyReleased(KeyEvent e) {
@@ -103,4 +144,5 @@ public class SendEvents implements KeyListener, MouseMotionListener, MouseListen
         writer.println(e.getKeyCode());
         writer.flush();
     }
+
 }
