@@ -7,7 +7,8 @@ public enum Commands {
     RELEASE_KEY(-4),
     MOVE_MOUSE(-5),
     CLICK_MOUSE(-6),
-    PASTE(-7);
+    MOUSE_WHEEL_MOVED(-7),
+    MOUSE_DRAGGED(-8);
 
     private int abbrev;
 

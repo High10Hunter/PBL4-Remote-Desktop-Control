@@ -43,14 +43,10 @@ public class ReceiveEvents extends Thread {
                         robot.mouseMove(scanner.nextInt(), scanner.nextInt());
                         break;
                     case -7:
-                        String text = scanner.nextLine();
-                        System.out.println("Text to be pasted: " + text);
-                        StringSelection stringSelection = new StringSelection(text);
-                        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
-                        robot.keyPress(KeyEvent.VK_CONTROL);
-                        robot.keyPress(KeyEvent.VK_V);
-                        robot.keyRelease(KeyEvent.VK_V);
-                        robot.keyRelease(KeyEvent.VK_CONTROL);
+                        robot.mouseWheel(scanner.nextInt());
+                        break;
+                    case -8:
+                        robot.mouseMove(scanner.nextInt(), scanner.nextInt());
                         break;
                     default:
                         break;
