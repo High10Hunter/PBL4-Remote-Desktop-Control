@@ -108,35 +108,46 @@ public class SendEvents implements KeyListener, MouseMotionListener, MouseWheelL
     }
 
     public void keyPressed(KeyEvent e) {
-        writer.println(Commands.PRESS_KEY.getAbbrev());
-        writer.println(e.getKeyCode());
-        writer.flush();
-    }
-
-    public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_C && e.isControlDown()) {
-            String clipboardContents = getClipboardContents();
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            Transferable contents = clipboard.getContents(null);
+            String data = "";
+            try {
+                data = (String) contents.getTransferData(DataFlavor.stringFlavor);
+            } catch (UnsupportedFlavorException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
             writer.println(Commands.PASTE_TEXT.getAbbrev());
-            writer.println(clipboardContents);
+            writer.println(data);
+            writer.flush();
+        } else if (e.getKeyCode() == KeyEvent.VK_V && e.isControlDown()) {
+            writer.println(Commands.PRESS_KEY.getAbbrev());
+            writer.println(KeyEvent.VK_CONTROL);
+            writer.flush();
+            writer.println(Commands.PRESS_KEY.getAbbrev());
+            writer.println(KeyEvent.VK_V);
+            writer.flush();
+            writer.println(Commands.RELEASE_KEY.getAbbrev());
+            writer.println(KeyEvent.VK_V);
+            writer.flush();
+            writer.println(Commands.RELEASE_KEY.getAbbrev());
+            writer.println(KeyEvent.VK_CONTROL);
+            writer.flush();
+        } else {
+            writer.println(Commands.PRESS_KEY.getAbbrev());
+            writer.println(e.getKeyCode());
             writer.flush();
         }
 
+    }
+
+    public void keyReleased(KeyEvent e) {
         writer.println(Commands.RELEASE_KEY.getAbbrev());
         writer.println(e.getKeyCode());
         writer.flush();
-    }
-
-    private String getClipboardContents() {
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        StringSelection selection = new StringSelection("");
-        if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
-            try {
-                selection = (StringSelection) clipboard.getData(DataFlavor.stringFlavor);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return selection.toString();
     }
 
     public void mouseWheelMoved(MouseWheelEvent e) {
