@@ -123,7 +123,7 @@ public class SendEvents implements KeyListener, MouseMotionListener, MouseWheelL
 
                     // Send the content of the clipboard to the server
                     writer.println(Commands.PASTE_TEXT.getAbbrev());
-                    writer.println(content);
+                    // writer.println(content);
                     writer.flush();
                 } catch (UnsupportedFlavorException | IOException ex) {
                     ex.printStackTrace();
