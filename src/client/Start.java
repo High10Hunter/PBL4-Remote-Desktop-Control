@@ -5,7 +5,7 @@ import java.net.Socket;
 import javax.swing.JOptionPane;
 
 public class Start {
-    static String port = "4907";
+    static String port = "8080";
 
     public static void main(String[] args) {
         String ip = JOptionPane.showInputDialog("Please enter server IP:");
