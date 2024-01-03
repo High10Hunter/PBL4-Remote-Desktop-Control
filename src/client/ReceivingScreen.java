@@ -41,15 +41,21 @@ public class ReceivingScreen extends Thread {
                 Graphics g = cPanel.getGraphics();
                 g.drawImage(image1, 0, 0, cPanel.getWidth(), cPanel.getHeight(), cPanel);
 
-                DataInputStream dis = new DataInputStream(oin);
-                int serverX = dis.readInt();
-                int serverY = dis.readInt();
+                new Thread(() -> {
+                    try {
+                        DataInputStream dis = new DataInputStream(oin);
+                        int serverX = dis.readInt();
+                        int serverY = dis.readInt();
 
-                // Move the mouse to the corresponding position
-                Robot robot = new Robot();
-                robot.mouseMove(serverX, serverY);
+                        // Move the mouse to the corresponding position
+                        Robot robot = new Robot();
+                        robot.mouseMove(serverX, serverY);
+                    } catch (IOException | AWTException ex) {
+                        ex.printStackTrace();
+                    }
+                }).start();
             }
-        } catch (IOException | AWTException ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
 

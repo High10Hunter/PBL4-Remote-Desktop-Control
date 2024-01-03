@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,9 +36,11 @@ public class SendScreen extends Thread {
 
         while (continueLoop) {
             BufferedImage image = robot.createScreenCapture(rectangle);
-            DataOutputStream dos = new DataOutputStream(oos);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            DataOutputStream dos = new DataOutputStream(baos);
             try {
                 ImageIO.write(image, "jpeg", oos);
+                oos.flush(); // Ensure the image data is sent immediately
 
                 // Send the scaled mouse coordinates
                 Point mousePoint = MouseInfo.getPointerInfo().getLocation();
@@ -47,6 +50,11 @@ public class SendScreen extends Thread {
                 int serverY = (int) (mousePoint.y * heightRatio);
                 dos.writeInt(serverX);
                 dos.writeInt(serverY);
+                dos.flush(); // Ensure the mouse data is sent immediately
+
+                // Write the byte array to the original OutputStream
+                oos.write(baos.toByteArray());
+                oos.flush();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
