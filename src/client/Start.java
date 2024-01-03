@@ -1,6 +1,7 @@
 package client;
 
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.JOptionPane;
 
@@ -20,8 +21,18 @@ public class Start {
             frame1.setSize(300, 80);
             frame1.setLocation(500, 300);
             frame1.setVisible(true);
+        } catch (UnknownHostException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Could not connect to server. Please check the IP address and try again.", "Connection Error",
+                    JOptionPane.ERROR_MESSAGE);
+            String newIp = JOptionPane.showInputDialog("Please enter a valid server IP:");
+            initialize(newIp, port);
         } catch (Exception e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,
+                    "Could not connect to server. Please check the IP address and try again.", "Connection Error",
+                    JOptionPane.ERROR_MESSAGE);
+            String newIp = JOptionPane.showInputDialog("Please enter a valid server IP:");
+            initialize(newIp, port);
         }
     }
 }
