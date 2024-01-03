@@ -1,8 +1,11 @@
 package client;
 
+import java.awt.AWTException;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Robot;
 import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -37,8 +40,16 @@ public class ReceivingScreen extends Thread {
 
                 Graphics g = cPanel.getGraphics();
                 g.drawImage(image1, 0, 0, cPanel.getWidth(), cPanel.getHeight(), cPanel);
+
+                DataInputStream dis = new DataInputStream(oin);
+                int serverX = dis.readInt();
+                int serverY = dis.readInt();
+
+                // Move the mouse to the corresponding position
+                Robot robot = new Robot();
+                robot.mouseMove(serverX, serverY);
             }
-        } catch (IOException ex) {
+        } catch (IOException | AWTException ex) {
             ex.printStackTrace();
         }
 
