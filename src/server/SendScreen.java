@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 public class SendScreen extends Thread {
     Socket socket = null;
@@ -36,11 +37,15 @@ public class SendScreen extends Thread {
                 ImageIO.write(image, "jpeg", oos);
             } catch (IOException ex) {
                 ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "An error occurred", "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
 
             try {
                 Thread.sleep(10);
             } catch (InterruptedException ex) {
+                JOptionPane.showMessageDialog(null, "An error occurred", "Error",
+                        JOptionPane.ERROR_MESSAGE);
                 ex.printStackTrace();
             }
         }

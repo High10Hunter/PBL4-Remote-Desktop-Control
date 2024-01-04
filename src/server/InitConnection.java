@@ -11,6 +11,8 @@ import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import javax.swing.JOptionPane;
+
 public class InitConnection {
     ServerSocket socket = null;
     DataInputStream password = null;
@@ -50,6 +52,8 @@ public class InitConnection {
                 }
             }
         } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "An error occurred: " + ex.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
         }
     }
